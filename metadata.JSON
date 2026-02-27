@@ -1,0 +1,5 @@
+{
+  "name": "RAL Color Explorer",
+  "description": "A comprehensive color analysis tool allowing users to search RAL, Hex, or RGB values and view harmonies, conversions, and closest matches.",
+  "requestFramePermissions": []
+}
