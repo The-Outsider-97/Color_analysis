@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAL Color Explorer</title>
+    <link rel="icon" type="image/x-icon" href="img/logo-01.svg" />
+    <!-- Use CDN for Tailwind. For strict offline, you must download tailwind css or use the CLI to generate a file -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              background: '#f4f4f4',
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="styles/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.564.0"
+  }
+}
+</script>
+</head>
+<body class="bg-background dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300 font-serif flex flex-col">
+
+    <!-- NAVBAR -->
+    <nav class="w-full bg-[#E5E5E5] dark:bg-gray-800 py-4 px-6 flex justify-end items-center gap-2 lg:gap-4 sticky top-0 z-50 shadow-sm overflow-x-auto">
+        <button onclick="window.router.navigate('home')" id="nav-home" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap">HOME</button>
+        <button onclick="window.router.navigate('library')" id="nav-library" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap">RAL Library</button>
+        <button onclick="window.router.navigate('wheel')" id="nav-wheel" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap">Color Wheel</button>
+        <button onclick="window.router.navigate('mixer')" id="nav-mixer" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap">Color Mixer</button>
+        <button onclick="window.router.navigate('theory')" id="nav-theory" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap">Color Theory</button>
+        
+        <div onclick="window.ui.toggleTheme()" class="flex-shrink-0 flex items-center bg-[#D4AF37] rounded-full p-1 w-16 h-8 relative cursor-pointer ml-2 lg:ml-4 select-none">
+            <div id="theme-toggle-dot" class="absolute top-1 w-6 h-6 bg-black rounded-full flex items-center justify-center transition-all duration-300 left-1"></div>
+            <!-- Sun Icon -->
+            <svg class="w-4 h-4 text-black absolute left-2 pointer-events-none opacity-0 dark:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <!-- Moon Icon -->
+            <svg class="w-4 h-4 text-black absolute right-2 pointer-events-none opacity-100 dark:opacity-0 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </div>
+    </nav>
+
+    <main class="w-full flex-1">
+        
+        <!-- VIEW: HOME -->
+        <div id="view-home" class="view-section w-full max-w-[1600px] mx-auto p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 hidden animate-fade-in">
+            <!-- Left: Search & Data -->
+            <div class="lg:col-span-5 flex flex-col">
+                <form onsubmit="window.app.handleHomeSearch(event)" class="relative w-full mb-8">
+                    <input type="text" id="home-search-input" placeholder="Search RAL color here" 
+                           class="w-full border-[3px] rounded-2xl py-6 px-8 text-3xl font-serif text-gray-500 placeholder-gray-300 focus:outline-none shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] bg-[#EBEBEB] transition-colors duration-300">
+                    <button type="submit" class="absolute right-6 top-1/2 transform -translate-y-1/2">
+                        <svg class="w-10 h-10 text-black" stroke-width="2.5" stroke="currentColor" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
+                </form>
+
+                <div id="home-data-grid"></div>
+
+                <div class="mt-12">
+                    <p class="text-lg mb-4 font-serif dark:text-gray-200">Closest RAL color matching the search: <span id="home-closest-code" class="font-bold"></span></p>
+                    <div id="home-closest-card" class="w-full h-32 rounded-xl shadow-inner transition-colors duration-500 surface-effect flex flex-col justify-center px-6">
+                        <div class="font-serif">
+                            <p id="home-closest-name" class="text-2xl font-bold"></p>
+                            <p id="home-closest-family" class="text-lg opacity-80 capitalize"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle: Visualizers -->
+            <div class="lg:col-span-3 flex justify-between px-4 pt-12">
+                <!-- Comp -->
+                <div class="flex flex-col items-center gap-2">
+                    <div id="home-viz-comp" class="w-20 h-[500px] rounded-2xl shadow-md transition-colors duration-500 surface-effect relative overflow-hidden flex items-center justify-center">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-75 whitespace-nowrap" style="writing-mode: vertical-rl; transform: rotate(180deg);">
+                            <span id="home-viz-comp-text" class="font-sans font-medium tracking-wider text-sm"></span>
+                        </div>
+                    </div>
+                    <span class="text-sm mt-2 text-center dark:text-gray-300">Complementary</span>
+                </div>
+                <!-- Result -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="text-lg font-serif mb-2 dark:text-gray-200">Result</div>
+                    <div id="home-viz-result" class="w-20 h-[600px] rounded-2xl shadow-lg transition-colors duration-500 surface-effect relative overflow-hidden flex items-center justify-center">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-75 whitespace-nowrap" style="writing-mode: vertical-rl; transform: rotate(180deg);">
+                            <span id="home-viz-result-hex" class="font-sans font-medium tracking-wider text-sm"></span>
+                            <span id="home-viz-result-rgb" class="font-sans font-medium tracking-wider text-xs"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Adjacents -->
+                <div class="flex flex-col gap-4 pt-12">
+                    <div class="flex flex-col items-center gap-2">
+                        <div id="home-viz-adj-low" class="w-20 h-[240px] rounded-2xl shadow-md transition-colors duration-500 surface-effect relative flex items-center justify-center overflow-hidden"></div>
+                        <span class="text-sm w-20 text-center leading-tight dark:text-gray-300">Low adjacent RAL</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <div id="home-viz-adj-high" class="w-20 h-[240px] rounded-2xl shadow-md transition-colors duration-500 surface-effect relative flex items-center justify-center overflow-hidden"></div>
+                        <span class="text-sm w-20 text-center leading-tight dark:text-gray-300">High adjacent RAL</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Harmonies -->
+            <div id="home-harmonies" class="lg:col-span-4 pl-4 pt-4"></div>
+        </div>
+
+        <!-- VIEW: LIBRARY -->
+        <div id="view-library" class="view-section w-full max-w-[1600px] mx-auto p-8 font-serif hidden animate-fade-in">
+             <div class="flex justify-center mb-12">
+                <form onsubmit="window.app.handleLibrarySearch(event)" class="relative w-full max-w-4xl">
+                    <input type="text" id="lib-search-input" placeholder="Search RAL color here" 
+                           class="w-full border-[3px] rounded-full py-5 px-8 text-2xl font-serif text-gray-500 placeholder-gray-300 focus:outline-none shadow-sm bg-white transition-colors duration-300">
+                    <button type="submit" class="absolute right-6 top-1/2 transform -translate-y-1/2">
+                        <svg class="w-8 h-8 text-black" stroke-width="2.5" stroke="currentColor" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Library Results -->
+            <div id="lib-results-container" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto transition-opacity duration-500 opacity-50 grayscale pointer-events-none">
+                <!-- Result Box -->
+                <div class="flex gap-4 items-center">
+                    <div id="lib-res-box" class="w-24 h-24 rounded-2xl shadow-md surface-effect border-2 border-gray-100 dark:border-gray-700 bg-gray-200"></div>
+                    <div class="flex flex-col">
+                        <span class="text-lg font-serif mb-1 dark:text-gray-200">Result</span>
+                        <span id="lib-res-hex" class="text-sm text-gray-500 font-sans">---</span>
+                    </div>
+                </div>
+                <!-- Closest -->
+                <div class="flex gap-4 items-center">
+                    <div id="lib-res-closest-box" class="w-24 h-24 rounded-2xl shadow-md surface-effect border-2 border-gray-100 dark:border-gray-700 bg-gray-200"></div>
+                    <div class="flex flex-col">
+                        <span class="text-lg font-serif mb-1 dark:text-gray-200">Closest RAL</span>
+                        <span id="lib-res-closest-code" class="text-sm font-bold dark:text-gray-300">RAL ----</span>
+                        <span id="lib-res-closest-name" class="text-sm text-gray-500 font-sans">Name</span>
+                    </div>
+                </div>
+                <!-- Comp -->
+                <div class="flex gap-4 items-center">
+                    <div id="lib-res-comp-box" class="w-24 h-24 rounded-2xl shadow-md surface-effect border-2 border-gray-100 dark:border-gray-700 bg-gray-200"></div>
+                    <div class="flex flex-col">
+                        <span class="text-lg font-serif mb-1 dark:text-gray-200">Complementary RAL</span>
+                        <span id="lib-res-comp-code" class="text-sm font-bold dark:text-gray-300">RAL ----</span>
+                        <span id="lib-res-comp-name" class="text-sm text-gray-500 font-sans">Name</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accordion -->
+            <div id="lib-accordion" class="space-y-4"></div>
+        </div>
+
+        <!-- VIEW: WHEEL -->
+        <div id="view-wheel" class="view-section w-full max-w-[1600px] mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 h-full hidden animate-fade-in">
+            <!-- Left Controls -->
+            <div class="hidden lg:flex lg:col-span-1 flex-col justify-center items-center gap-4">
+                <button onclick="window.app.setWheelMode('RGB')" id="wheel-mode-rgb" class="w-12 h-12 rounded-full border-2 flex items-center justify-center font-bold text-lg transition-all border-white bg-gray-200 text-black">G</button>
+                <button onclick="window.app.setWheelMode('RYB')" id="wheel-mode-ryb" class="w-12 h-12 rounded-full border-2 flex items-center justify-center font-bold text-lg transition-all border-gray-500 text-gray-500">Y</button>
+            </div>
+            
+            <!-- Center SVG -->
+            <div class="col-span-1 lg:col-span-8 flex flex-col items-center">
+                <div class="relative w-full max-w-[600px] aspect-square">
+                    <svg id="color-wheel-svg" viewBox="-170 -170 340 340" class="w-full h-full drop-shadow-2xl">
+                        <!-- Content injected by JS -->
+                    </svg>
+                </div>
+                <div id="wheel-data-container" class="w-full mt-8 bg-white dark:bg-[#1a1a1a] p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800">
+                    <!-- Data grid injected -->
+                </div>
+            </div>
+
+            <!-- Right Controls -->
+            <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
+                <h3 class="text-xl font-serif font-bold dark:text-gray-200 border-b border-gray-700 pb-2">Harmony</h3>
+                <div id="wheel-harmony-buttons" class="flex flex-col gap-3"></div>
+                <div id="wheel-harmony-results" class="flex flex-col gap-4 mt-8 hidden animate-slide-up">
+                    <p class="text-sm uppercase tracking-widest text-gray-500">Selected Harmonies</p>
+                    <div id="wheel-harmony-grid" class="grid grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: MIXER -->
+        <div id="view-mixer" class="view-section w-full min-h-screen pb-64 font-serif hidden animate-fade-in">
+            <div class="max-w-[1600px] mx-auto p-8">
+                <!-- Search & Picker -->
+                <div class="flex justify-center mb-12 items-center gap-4 max-w-5xl mx-auto">
+                    <form onsubmit="window.app.handleMixerSearch(event)" class="relative flex-1">
+                        <input type="text" id="mixer-search-input" placeholder="Search colors to mix (Hex, RAL, or RGB e.g. 255,0,0)" class="w-full border-[3px] border-black dark:border-gray-600 rounded-full py-5 px-8 text-2xl font-serif placeholder-gray-400 focus:outline-none bg-white dark:bg-gray-900 dark:text-white transition-colors">
+                        <button type="submit" class="absolute right-6 top-1/2 transform -translate-y-1/2">
+                            <svg class="w-8 h-8 text-black dark:text-white" stroke-width="2.5" stroke="currentColor" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </button>
+                    </form>
+                    
+                    <!-- Color Picker -->
+                    <div class="relative group flex-shrink-0">
+                         <div class="absolute inset-0 bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500 rounded-full blur opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                         <label class="relative block w-16 h-16 bg-white dark:bg-gray-800 rounded-full cursor-pointer flex items-center justify-center border-[3px] border-black dark:border-gray-600 overflow-hidden hover:scale-105 transition-transform active:scale-95 shadow-md">
+                            <input type="color" oninput="window.app.handleMixerColorPick(event)" class="absolute inset-0 opacity-0 w-[200%] h-[200%] cursor-pointer -translate-x-1/2 -translate-y-1/2" />
+                            <!-- Palette / Swatch Icon -->
+                            <svg class="w-8 h-8 text-black dark:text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" /></svg>
+                         </label>
+                    </div>
+                </div>
+
+                <!-- Result Row -->
+                <div class="mb-16">
+                    <h2 class="text-xl font-serif mb-4 dark:text-gray-200">Search result</h2>
+                    <div class="flex gap-4">
+                        <div class="flex border-[3px] border-black dark:border-gray-600 rounded-xl overflow-hidden h-24 w-80">
+                            <div id="mixer-res-color" class="w-24 h-full bg-black"></div>
+                            <div class="flex-1 bg-white dark:bg-gray-800 flex flex-col justify-center px-4 font-serif relative">
+                                <span id="mixer-res-hex" class="font-bold dark:text-gray-100">---</span>
+                                <span id="mixer-res-rgb" class="text-sm dark:text-gray-300">---</span>
+                                <button id="mixer-add-btn" onclick="window.app.addMixerSlot()" disabled class="absolute right-0 top-0 bottom-0 w-20 bg-[#EBEBEB] dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-black dark:text-white disabled:opacity-50 disabled:cursor-not-allowed border-l-[3px] border-black dark:border-gray-600 flex items-center justify-center font-bold tracking-widest text-sm transition-colors">ADD</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mixer Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    <!-- Left: Result + Slider -->
+                    <div class="lg:col-span-3">
+                        <h2 class="text-xl font-serif mb-4 dark:text-gray-200">Mixer result</h2>
+                        <div class="flex gap-6 h-[500px]">
+                            <!-- Slider -->
+                            <div class="w-12 h-full bg-gradient-to-b from-gray-200 to-gray-800 rounded-full relative flex justify-center py-2 shadow-inner">
+                                <input type="range" min="0" max="100" value="50" oninput="window.app.updateSaturation(this.value)" class="w-[480px] h-12 bg-transparent appearance-none cursor-pointer absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -rotate-90 z-10">
+                            </div>
+                            <!-- Bar -->
+                            <div class="flex-1 bg-black text-white flex flex-col">
+                                <div id="mixer-final-preview" class="flex-1 w-full transition-colors duration-300 bg-black"></div>
+                                <div id="mixer-final-data" class="bg-black text-white p-4 font-serif text-sm space-y-3 border-t border-gray-700"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Slots -->
+                    <div class="lg:col-span-9">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-serif dark:text-gray-200">Mixer</h2>
+                            <button onclick="window.app.clearMixer()" class="text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-serif underline decoration-1 underline-offset-4 cursor-pointer hover:opacity-80 transition-opacity">Clear All</button>
+                        </div>
+                        <div id="mixer-slots-container" class="flex gap-4 h-[500px]">
+                            <!-- Slots injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Palette -->
+            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t shadow-[0_-5px_20px_rgba(0,0,0,0.1)] z-40 transition-transform duration-500 ease-out translate-y-0">
+                <div class="max-w-[1600px] mx-auto px-8 py-4">
+                    <div class="flex items-center gap-8 mb-4 border-b border-gray-200 dark:border-gray-800 pb-4">
+                        <span class="font-serif font-bold text-lg dark:text-white">Color palette generator</span>
+                        <div class="flex bg-[#EBEBEB] dark:bg-gray-700 rounded-full p-1">
+                            <button onclick="window.app.setPaletteMode('RAL')" id="pal-mode-ral" class="px-4 py-1 rounded-full text-sm font-bold transition-all bg-white shadow-sm">RAL</button>
+                            <button onclick="window.app.setPaletteMode('CODE')" id="pal-mode-code" class="px-4 py-1 rounded-full text-sm font-bold transition-all text-gray-500">CODE</button>
+                        </div>
+                        <div id="pal-types" class="flex gap-6"></div>
+                    </div>
+                    <div id="pal-grid" class="flex w-full h-32 gap-1"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: THEORY -->
+        <div id="view-theory" class="view-section w-full min-h-screen font-serif pb-24 hidden animate-fade-in">
+             <div class="bg-[#EBEBEB] dark:bg-gray-800 py-24 px-8 mb-16 transition-colors">
+                <div class="max-w-[1000px] mx-auto text-center">
+                  <h1 class="text-6xl font-bold mb-6 dark:text-white">Color Theory</h1>
+                  <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-sans">
+                    A deep dive into the systems, science, and relationships that govern how we perceive and use color in design, industry, and art.
+                  </p>
+                </div>
+              </div>
+              <div class="max-w-[1000px] mx-auto px-8 space-y-20">
+                  
+                  <section>
+                      <h2 class="text-3xl font-bold mb-8 border-b-2 border-black dark:border-white pb-4 inline-block dark:text-white">The RAL System</h2>
+                      <div class="space-y-6 text-lg text-gray-700 dark:text-gray-300 font-sans leading-relaxed">
+                          <p>
+                              <strong>RAL</strong> is a European color matching system which defines colors for paint, coatings, and plastics. 
+                              Created in 1927 by the German <i>Reichs-Ausschuß für Lieferbedingungen</i> (Imperial Committee for Delivery and Quality Assurance), 
+                              it standardized a set of 40 colors to facilitate communication between suppliers and manufacturers.
+                          </p>
+                          <p>
+                              Today, <strong>RAL Classic</strong> is the most famous collection, containing 213 colors. Each color is identified by a 4-digit number:
+                          </p>
+                          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-8 font-sans text-sm">
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-yellow-600 font-bold block mb-1">RAL 1xxx</span> Yellows</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-orange-500 font-bold block mb-1">RAL 2xxx</span> Oranges</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-red-600 font-bold block mb-1">RAL 3xxx</span> Reds</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-purple-600 font-bold block mb-1">RAL 4xxx</span> Violets</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-blue-600 font-bold block mb-1">RAL 5xxx</span> Blues</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-green-600 font-bold block mb-1">RAL 6xxx</span> Greens</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-gray-500 font-bold block mb-1">RAL 7xxx</span> Greys</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-yellow-800 font-bold block mb-1">RAL 8xxx</span> Browns</div>
+                          </div>
+                      </div>
+                  </section>
+                  
+                  <section>
+                      <h2 class="text-3xl font-bold mb-8 border-b-2 border-black dark:border-white pb-4 inline-block dark:text-white">Color Models</h2>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-lg text-gray-700 dark:text-gray-300 font-sans">
+                            <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">RGB (Additive)</h3>
+                              <p class="mb-4 text-base">
+                                Used for digital screens. Colors are created by adding Light. The primary colors are Red, Green, and Blue. 
+                                Combining all three at full intensity creates White.
+                              </p>
+                              <div class="flex gap-2">
+                                <div class="w-8 h-8 rounded-full bg-red-500"></div>
+                                <div class="w-8 h-8 rounded-full bg-green-500"></div>
+                                <div class="w-8 h-8 rounded-full bg-blue-500"></div>
+                                <span class="flex items-center text-sm ml-2">→ White</span>
+                              </div>
+                            </div>
+                            <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">CMYK (Subtractive)</h3>
+                              <p class="mb-4 text-base">
+                                Used for printing. Colors are created by subtracting light (absorbing ink). The primaries are Cyan, Magenta, Yellow, and Key (Black).
+                                Combining them creates Black.
+                              </p>
+                              <div class="flex gap-2">
+                                <div class="w-8 h-8 rounded-full bg-cyan-500"></div>
+                                <div class="w-8 h-8 rounded-full bg-pink-500"></div>
+                                <div class="w-8 h-8 rounded-full bg-yellow-400"></div>
+                                <span class="flex items-center text-sm ml-2">→ Black</span>
+                              </div>
+                            </div>
+                            <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">RYB (Artistic)</h3>
+                              <p class="mb-4 text-base">
+                                Used in painting and visual arts. The primaries are Red, Yellow, and Blue. Mixing them creates Orange, Green, and Purple. This model is often used for teaching color harmony in art schools.
+                              </p>
+                              <div class="flex gap-2">
+                                <div class="w-8 h-8 rounded-full bg-red-600"></div>
+                                <div class="w-8 h-8 rounded-full bg-yellow-400"></div>
+                                <div class="w-8 h-8 rounded-full bg-blue-600"></div>
+                                <span class="flex items-center text-sm ml-2">→ Brown/Black</span>
+                              </div>
+                            </div>
+                            <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">HSL & HSB</h3>
+                              <p class="mb-4 text-base">
+                                <strong>HSL</strong> (Hue, Saturation, Lightness) and <strong>HSB</strong> (Hue, Saturation, Brightness) are cylindrical coordinates of RGB. They align more closely with how humans perceive color attributes than mixing red, green, and blue light.
+                              </p>
+                              <div class="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm font-mono">
+                                  hsl(0, 100%, 50%) &rarr; Red<br/>
+                                  hsb(0, 100%, 100%) &rarr; Red
+                              </div>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">Web Colors</h3>
+                                <p class="mb-4 text-base">
+                                    Colors used in web design, often specified by names (e.g., "Tomato", "Teal") or hex codes. There are 140 standard color names supported by all modern browsers.
+                                </p>
+                            </div>
+                      </div>
+                  </section>
+
+                  <section>
+                      <h2 class="text-3xl font-bold mb-8 border-b-2 border-black dark:border-white pb-4 inline-block dark:text-white">Color Representation Systems</h2>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-lg text-gray-700 dark:text-gray-300 font-sans">
+                          <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">Hexadecimal System (Hex)</h3>
+                              <p class="mb-4 text-base">
+                                  A 6-digit code used in HTML, CSS, and SVG to represent colors. The bytes represent the red, green, and blue components of the color (e.g., #RRGGBB). It uses base-16 math (0-9, A-F).
+                              </p>
+                              <div class="p-4 bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded font-mono text-center">
+                                  #FF5733
+                              </div>
+                          </div>
+                          <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">RGB System</h3>
+                              <p class="mb-4 text-base">
+                                  Specifies the intensity of Red, Green, and Blue channels on a scale of 0 to 255. 
+                                  (0, 0, 0) is black, and (255, 255, 255) is white. This 8-bit per channel system is the standard for digital images and displays.
+                              </p>
+                              <div class="p-4 bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded font-mono text-center">
+                                  rgb(255, 87, 51)
+                              </div>
+                          </div>
+                      </div>
+                  </section>
+                  
+                  <section>
+                    <h2 class="text-3xl font-bold mb-8 border-b-2 border-black dark:border-white pb-4 inline-block dark:text-white">Color Harmonies</h2>
+                    <p class="mb-8 dark:text-gray-300">Harmonies are technically defined relationships between colors on the color wheel. These formulas create aesthetically pleasing combinations used in design.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-y-12 gap-x-8 text-gray-800 dark:text-gray-300">
+                       <div><h4 class="font-bold mb-2 dark:text-white">Complementary</h4><p class="text-sm mb-3">Opposites on the wheel. High contrast.</p><div class="flex"><div class="w-1/2 h-12 bg-[#FF0000]"></div><div class="w-1/2 h-12 bg-[#00FF00]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Split-Complementary</h4><p class="text-sm mb-3">Base color + two adjacent to its complement.</p><div class="flex"><div class="w-1/3 h-12 bg-[#FF0000]"></div><div class="w-1/3 h-12 bg-[#00FF80]"></div><div class="w-1/3 h-12 bg-[#0080FF]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Analogous</h4><p class="text-sm mb-3">Colors next to each other.</p><div class="flex"><div class="w-1/3 h-12 bg-[#FF0000]"></div><div class="w-1/3 h-12 bg-[#FF8000]"></div><div class="w-1/3 h-12 bg-[#FFFF00]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Double Analogous</h4><p class="text-sm mb-3">Extended analogous run (4-5 colors).</p><div class="flex"><div class="w-1/4 h-12 bg-[#FF0000]"></div><div class="w-1/4 h-12 bg-[#FF4000]"></div><div class="w-1/4 h-12 bg-[#FF8000]"></div><div class="w-1/4 h-12 bg-[#FFC000]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Triadic</h4><p class="text-sm mb-3">Three colors evenly spaced.</p><div class="flex"><div class="w-1/3 h-12 bg-[#FF0000]"></div><div class="w-1/3 h-12 bg-[#0000FF]"></div><div class="w-1/3 h-12 bg-[#FFFF00]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Tetradic (Rectangular)</h4><p class="text-sm mb-3">Two complementary pairs.</p><div class="flex"><div class="w-1/4 h-12 bg-[#FF0000]"></div><div class="w-1/4 h-12 bg-[#00FF00]"></div><div class="w-1/4 h-12 bg-[#0000FF]"></div><div class="w-1/4 h-12 bg-[#FF8000]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Monochromatic</h4><p class="text-sm mb-3">Shades, tints, and tones of one hue.</p><div class="flex"><div class="w-1/3 h-12 bg-[#FF0000]"></div><div class="w-1/3 h-12 bg-[#B30000]"></div><div class="w-1/3 h-12 bg-[#FF9999]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Hexadic</h4><p class="text-sm mb-3">Six colors evenly spaced.</p><div class="flex"><div class="w-1/6 h-12 bg-[#FF0000]"></div><div class="w-1/6 h-12 bg-[#FFFF00]"></div><div class="w-1/6 h-12 bg-[#00FF00]"></div><div class="w-1/6 h-12 bg-[#00FFFF]"></div><div class="w-1/6 h-12 bg-[#0000FF]"></div><div class="w-1/6 h-12 bg-[#FF00FF]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Complementary Analogous</h4><p class="text-sm mb-3">Analogous colors plus the complement of the central hue.</p><div class="flex"><div class="w-1/4 h-12 bg-[#FF0000]"></div><div class="w-1/4 h-12 bg-[#FF8000]"></div><div class="w-1/4 h-12 bg-[#FFFF00]"></div><div class="w-1/4 h-12 bg-[#0080FF]"></div></div></div>
+                    </div>
+                  </section>
+              </div>
+        </div>
+
+    </main>
+
+    <!-- SCRIPTS -->
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/home.js"></script>
+    <script src="js/library.js"></script>
+    <script src="js/wheel.js"></script>
+    <script src="js/mixer.js"></script>
+    <script src="js/theory.js"></script>
+</body>
+</html>

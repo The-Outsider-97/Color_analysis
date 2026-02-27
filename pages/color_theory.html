@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Theory - RAL Color Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              background: '#f4f4f4',
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body class="bg-background dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300 font-serif flex flex-col">
+
+    <!-- NAVBAR -->
+    <nav class="w-full bg-[#E5E5E5] dark:bg-gray-800 py-4 px-6 flex justify-end items-center gap-2 lg:gap-4 sticky top-0 z-50 shadow-sm overflow-x-auto">
+        <a href="../index.html" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap bg-[#EBEBEB] dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-600 flex items-center justify-center decoration-0">HOME</a>
+        <a href="../index.html" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap bg-[#EBEBEB] dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-600 flex items-center justify-center decoration-0">RAL Library</a>
+        <a href="../index.html" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap bg-[#EBEBEB] dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-600 flex items-center justify-center decoration-0">Color Wheel</a>
+        <a href="../index.html" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap bg-[#EBEBEB] dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-600 flex items-center justify-center decoration-0">Color Mixer</a>
+        <a href="#" class="nav-btn px-4 lg:px-6 py-2 rounded-full font-medium transition-colors cursor-pointer whitespace-nowrap bg-black text-white shadow-inner flex items-center justify-center decoration-0">Color Theory</a>
+        
+        <div onclick="toggleTheme()" class="flex-shrink-0 flex items-center bg-[#D4AF37] rounded-full p-1 w-16 h-8 relative cursor-pointer ml-2 lg:ml-4 select-none">
+            <div id="theme-toggle-dot" class="absolute top-1 w-6 h-6 bg-black rounded-full flex items-center justify-center transition-all duration-300 left-1"></div>
+            <!-- Sun Icon -->
+            <svg class="w-4 h-4 text-black absolute left-2 pointer-events-none opacity-0 dark:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <!-- Moon Icon -->
+            <svg class="w-4 h-4 text-black absolute right-2 pointer-events-none opacity-100 dark:opacity-0 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </div>
+    </nav>
+
+    <main class="w-full flex-1">
+        <div class="view-section w-full min-h-screen font-serif pb-24 animate-fade-in">
+             <div class="bg-[#EBEBEB] dark:bg-gray-800 py-24 px-8 mb-16 transition-colors">
+                <div class="max-w-[1000px] mx-auto text-center">
+                  <h1 class="text-6xl font-bold mb-6 dark:text-white">Color Theory</h1>
+                  <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-sans">
+                    A deep dive into the systems, science, and relationships that govern how we perceive and use color in design, industry, and art.
+                  </p>
+                </div>
+              </div>
+              <div class="max-w-[1000px] mx-auto px-8 space-y-20">
+                  
+                  <section>
+                      <h2 class="text-3xl font-bold mb-8 border-b-2 border-black dark:border-white pb-4 inline-block dark:text-white">The RAL System</h2>
+                      <div class="space-y-6 text-lg text-gray-700 dark:text-gray-300 font-sans leading-relaxed">
+                          <p>
+                              <strong>RAL</strong> is a European color matching system which defines colors for paint, coatings, and plastics. 
+                              Created in 1927 by the German <i>Reichs-Ausschuß für Lieferbedingungen</i> (Imperial Committee for Delivery and Quality Assurance), 
+                              it standardized a set of 40 colors to facilitate communication between suppliers and manufacturers.
+                          </p>
+                          <p>
+                              Today, <strong>RAL Classic</strong> is the most famous collection, containing 213 colors. Each color is identified by a 4-digit number:
+                          </p>
+                          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-8 font-sans text-sm">
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-yellow-600 font-bold block mb-1">RAL 1xxx</span> Yellows</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-orange-500 font-bold block mb-1">RAL 2xxx</span> Oranges</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-red-600 font-bold block mb-1">RAL 3xxx</span> Reds</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-purple-600 font-bold block mb-1">RAL 4xxx</span> Violets</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-blue-600 font-bold block mb-1">RAL 5xxx</span> Blues</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-green-600 font-bold block mb-1">RAL 6xxx</span> Greens</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-gray-500 font-bold block mb-1">RAL 7xxx</span> Greys</div>
+                              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"><span class="text-yellow-800 font-bold block mb-1">RAL 8xxx</span> Browns</div>
+                          </div>
+                      </div>
+                  </section>
+                  
+                  <section>
+                      <h2 class="text-3xl font-bold mb-8 border-b-2 border-black dark:border-white pb-4 inline-block dark:text-white">Color Models</h2>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-lg text-gray-700 dark:text-gray-300 font-sans">
+                            <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">RGB (Additive)</h3>
+                              <p class="mb-4 text-base">
+                                Used for digital screens. Colors are created by adding Light. The primary colors are Red, Green, and Blue. 
+                                Combining all three at full intensity creates White.
+                              </p>
+                              <div class="flex gap-2">
+                                <div class="w-8 h-8 rounded-full bg-red-500"></div>
+                                <div class="w-8 h-8 rounded-full bg-green-500"></div>
+                                <div class="w-8 h-8 rounded-full bg-blue-500"></div>
+                                <span class="flex items-center text-sm ml-2">→ White</span>
+                              </div>
+                            </div>
+                            <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">CMYK (Subtractive)</h3>
+                              <p class="mb-4 text-base">
+                                Used for printing. Colors are created by subtracting light (absorbing ink). The primaries are Cyan, Magenta, Yellow, and Key (Black).
+                                Combining them creates Black.
+                              </p>
+                              <div class="flex gap-2">
+                                <div class="w-8 h-8 rounded-full bg-cyan-500"></div>
+                                <div class="w-8 h-8 rounded-full bg-pink-500"></div>
+                                <div class="w-8 h-8 rounded-full bg-yellow-400"></div>
+                                <span class="flex items-center text-sm ml-2">→ Black</span>
+                              </div>
+                            </div>
+                            <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">RYB (Artistic)</h3>
+                              <p class="mb-4 text-base">
+                                Used in painting and visual arts. The primaries are Red, Yellow, and Blue. Mixing them creates Orange, Green, and Purple. This model is often used for teaching color harmony in art schools.
+                              </p>
+                              <div class="flex gap-2">
+                                <div class="w-8 h-8 rounded-full bg-red-600"></div>
+                                <div class="w-8 h-8 rounded-full bg-yellow-400"></div>
+                                <div class="w-8 h-8 rounded-full bg-blue-600"></div>
+                                <span class="flex items-center text-sm ml-2">→ Brown/Black</span>
+                              </div>
+                            </div>
+                            <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">HSL & HSB</h3>
+                              <p class="mb-4 text-base">
+                                <strong>HSL</strong> (Hue, Saturation, Lightness) and <strong>HSB</strong> (Hue, Saturation, Brightness) are cylindrical coordinates of RGB. They align more closely with how humans perceive color attributes than mixing red, green, and blue light.
+                              </p>
+                              <div class="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm font-mono">
+                                  hsl(0, 100%, 50%) &rarr; Red<br/>
+                                  hsb(0, 100%, 100%) &rarr; Red
+                              </div>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">Web Colors</h3>
+                                <p class="mb-4 text-base">
+                                    Colors used in web design, often specified by names (e.g., "Tomato", "Teal") or hex codes. There are 140 standard color names supported by all modern browsers.
+                                </p>
+                            </div>
+                      </div>
+                  </section>
+
+                  <section>
+                      <h2 class="text-3xl font-bold mb-8 border-b-2 border-black dark:border-white pb-4 inline-block dark:text-white">Color Representation Systems</h2>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-lg text-gray-700 dark:text-gray-300 font-sans">
+                          <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">Hexadecimal System (Hex)</h3>
+                              <p class="mb-4 text-base">
+                                  A 6-digit code used in HTML, CSS, and SVG to represent colors. The bytes represent the red, green, and blue components of the color (e.g., #RRGGBB). It uses base-16 math (0-9, A-F).
+                              </p>
+                              <div class="p-4 bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded font-mono text-center">
+                                  #FF5733
+                              </div>
+                          </div>
+                          <div>
+                              <h3 class="text-xl font-bold mb-3 font-serif dark:text-gray-200">RGB System</h3>
+                              <p class="mb-4 text-base">
+                                  Specifies the intensity of Red, Green, and Blue channels on a scale of 0 to 255. 
+                                  (0, 0, 0) is black, and (255, 255, 255) is white. This 8-bit per channel system is the standard for digital images and displays.
+                              </p>
+                              <div class="p-4 bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded font-mono text-center">
+                                  rgb(255, 87, 51)
+                              </div>
+                          </div>
+                      </div>
+                  </section>
+                  
+                  <section>
+                    <h2 class="text-3xl font-bold mb-8 border-b-2 border-black dark:border-white pb-4 inline-block dark:text-white">Color Harmonies</h2>
+                    <p class="mb-8 dark:text-gray-300">Harmonies are technically defined relationships between colors on the color wheel. These formulas create aesthetically pleasing combinations used in design.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-y-12 gap-x-8 text-gray-800 dark:text-gray-300">
+                       <div><h4 class="font-bold mb-2 dark:text-white">Complementary</h4><p class="text-sm mb-3">Opposites on the wheel. High contrast.</p><div class="flex"><div class="w-1/2 h-12 bg-[#FF0000]"></div><div class="w-1/2 h-12 bg-[#00FF00]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Split-Complementary</h4><p class="text-sm mb-3">Base color + two adjacent to its complement.</p><div class="flex"><div class="w-1/3 h-12 bg-[#FF0000]"></div><div class="w-1/3 h-12 bg-[#00FF80]"></div><div class="w-1/3 h-12 bg-[#0080FF]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Analogous</h4><p class="text-sm mb-3">Colors next to each other.</p><div class="flex"><div class="w-1/3 h-12 bg-[#FF0000]"></div><div class="w-1/3 h-12 bg-[#FF8000]"></div><div class="w-1/3 h-12 bg-[#FFFF00]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Double Analogous</h4><p class="text-sm mb-3">Extended analogous run (4-5 colors).</p><div class="flex"><div class="w-1/4 h-12 bg-[#FF0000]"></div><div class="w-1/4 h-12 bg-[#FF4000]"></div><div class="w-1/4 h-12 bg-[#FF8000]"></div><div class="w-1/4 h-12 bg-[#FFC000]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Triadic</h4><p class="text-sm mb-3">Three colors evenly spaced.</p><div class="flex"><div class="w-1/3 h-12 bg-[#FF0000]"></div><div class="w-1/3 h-12 bg-[#0000FF]"></div><div class="w-1/3 h-12 bg-[#FFFF00]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Tetradic (Rectangular)</h4><p class="text-sm mb-3">Two complementary pairs.</p><div class="flex"><div class="w-1/4 h-12 bg-[#FF0000]"></div><div class="w-1/4 h-12 bg-[#00FF00]"></div><div class="w-1/4 h-12 bg-[#0000FF]"></div><div class="w-1/4 h-12 bg-[#FF8000]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Monochromatic</h4><p class="text-sm mb-3">Shades, tints, and tones of one hue.</p><div class="flex"><div class="w-1/3 h-12 bg-[#FF0000]"></div><div class="w-1/3 h-12 bg-[#B30000]"></div><div class="w-1/3 h-12 bg-[#FF9999]"></div></div></div>
+                       <div><h4 class="font-bold mb-2 dark:text-white">Hexadic</h4><p class="text-sm mb-3">Six colors evenly spaced.</p><div class="flex"><div class="w-1/6 h-12 bg-[#FF0000]"></div><div class="w-1/6 h-12 bg-[#FFFF00]"></div><div class="w-1/6 h-12 bg-[#00FF00]"></div><div class="w-1/6 h-12 bg-[#00FFFF]"></div><div class="w-1/6 h-12 bg-[#0000FF]"></div><div class="w-1/6 h-12 bg-[#FF00FF]"></div></div></div>
+                    </div>
+                  </section>
+              </div>
+        </div>
+    </main>
+
+    <script>
+        // Simple standalone theme toggler for this page
+        let isDarkMode = false;
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.documentElement.classList.toggle('dark');
+            const dot = document.getElementById('theme-toggle-dot');
+            if(dot) dot.style.left = isDarkMode ? '2.25rem' : '0.25rem';
+        }
+    </script>
+</body>
+</html>
